@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL to Source Code Converter</title>
+</head>
+<body>
+    <h1>URL to Source Code Converter</h1>
+    <form id="urlForm">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="button" onclick="convertToSourceCode()">Convert</button>
+    </form>
+    <div id="sourceCodeDisplay"></div>
+    <a id="downloadLink" style="display: none" download="source_code.html">Download Source Code</a>
+
+    <script>
+        function convertToSourceCode() {
+            const url = document.getElementById('url').value;
+            fetch(url)
+                .then(response => response.text())
+                .then(sourceCode => {
+                    const sourceCodeDisplay = document.getElementById('sourceCodeDisplay');
+                    sourceCodeDisplay.innerHTML = '<pre>' + escapeHtml(sourceCode) + '</pre>';
+                    
+                    const downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(sourceCode);
+                    downloadLink.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('An error occurred while fetching the URL.');
+                });
+        }
+
+        function escapeHtml(html) {
+            return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>
